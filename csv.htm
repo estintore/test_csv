@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>  
+<!-- Chart code -->
+<!-- Styles -->
+<style>
+#chartdiv {
+  width: 100%;
+  height: 500px;
+}
+
+</style>
+
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/dataviz.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+<!-- Chart code -->
+<script>
+
+// Create chart instance
+var chart = am4core.create("chartdiv", am4charts.XYChart);
+
+
+chart.dataSource.url = "https://raw.githubusercontent.com/estintore/test_csv/master/DME_%5B1%5D_D01_2019.csv";
+chart.dataSource.parser = new am4core.CSVParser();
+chart.dataSource.parser.options.useColumnNames = true;        
+//chart.dataSource.parser.options.skipRows = 1;
+chart.dataSource.events.on("error", function(ev) {
+  console.log("Oopsy! Something went wrong");
+});
+
+// Create axes
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.dataFields.category = "date"; 
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+
+// Create series
+function createSeries(field, name, colour) {
+  var series = chart.series.push(new am4charts.ColumnSeries());
+  series.dataFields.valueY = field;
+  series.dataFields.categoryX = "date";
+  series.name = name;
+  series.tooltipText = "{valueY} {name}";
+  series.strokeWidth = 0;
+  series.stacked = true;
+  series.fill = am4core.color(colour).saturate(0.5);
+  series.stroke = am4core.color(colour).saturate(1);
+}
+
+
+createSeries("good_1", "Buoni 1", "green");
+createSeries("good_2", "Buoni 2", "green");
+createSeries("fail_1", "Guasti 1", "red");
+createSeries("fail_2", "Guasti 2", "red");
+createSeries("stop_1", "Stoppati 1", "yellow");
+createSeries("stop_2", "Stoppati 2", "yellow");
+
+chart.legend = new am4charts.Legend();
+
+}); // end am4core.ready()
+</script>
+
+<!-- HTML -->
+</head>
+<body>
+<div id="chartdiv"></div>
+</body>
+</html> 
